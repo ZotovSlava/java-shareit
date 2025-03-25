@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class Item {
     private Long id;
-    private Long owner_id;
+    private Long ownerId;
 
     @NotBlank(message = "Item name can not be blank")
     private String name;

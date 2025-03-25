@@ -44,7 +44,7 @@ public class InMemoryItemStorage implements ItemStorage {
         List<Item> userItemsList = new ArrayList<>();
         List<Item> items = new ArrayList<>(itemsMap.values());
         for (Item item : items) {
-            if (item.getOwner_id().equals(userId)) {
+            if (item.getOwnerId().equals(userId)) {
                 userItemsList.add(item);
             }
         }

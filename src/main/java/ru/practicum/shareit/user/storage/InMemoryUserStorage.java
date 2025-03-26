@@ -15,7 +15,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        user.setId(idCounter());
+        user.setId(generateId());
         userMap.put(user.getId(), user);
 
         return user;
@@ -42,7 +42,7 @@ public class InMemoryUserStorage implements UserStorage {
         return userMap.containsKey(userId) ? Optional.of(userMap.remove(userId)) : Optional.empty();
     }
 
-    private Long idCounter() {
+    private Long generateId() {
         Set<Long> setKey = userMap.keySet();
         Long maxId = 0L;
 

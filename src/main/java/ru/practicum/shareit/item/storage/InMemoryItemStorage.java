@@ -12,7 +12,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item create(Item item) {
-        item.setId(idCounter());
+        item.setId(generateId());
         itemsMap.put(item.getId(), item);
 
         return item;
@@ -66,7 +66,7 @@ public class InMemoryItemStorage implements ItemStorage {
         return searchList;
     }
 
-    private Long idCounter() {
+    private Long generateId() {
         Set<Long> setKey = itemsMap.keySet();
         Long maxId = 0L;
 

@@ -26,11 +26,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Данный user не найден"));
 
-        if(userDto.getEmail() != null){
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
 
-        if(userDto.getName() != null){
+        if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
 

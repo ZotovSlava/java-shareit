@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ItemDto {
+public class ItemCreateDto {
     private Long id;
 
     @NotBlank(message = "Item name can not be blank")

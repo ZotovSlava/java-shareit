@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS bookings (
     end_date TIMESTAMP NOT NULL,
     status VARCHAR(50) NOT NULL,
     CONSTRAINT pk_bookings PRIMARY KEY (id),
-    CONSTRAINT fk_user FOREIGN KEY (booker_id) REFERENCES users(id),
-    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
+    CONSTRAINT fk_booker FOREIGN KEY (booker_id) REFERENCES users(id),
+    CONSTRAINT fk_booking_item FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
 -- Таблица комментариев
@@ -39,6 +39,6 @@ CREATE TABLE IF NOT EXISTS comments (
     item_id BIGINT NOT NULL,
     comment_date TIMESTAMP NOT NULL,
     CONSTRAINT pk_comments PRIMARY KEY (id),
-    CONSTRAINT fk_user FOREIGN KEY (author_id) REFERENCES users(id),
-    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
+    CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES users(id),
+    CONSTRAINT fk_comment_item FOREIGN KEY (item_id) REFERENCES items(id)
 );

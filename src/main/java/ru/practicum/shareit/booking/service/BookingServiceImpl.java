@@ -30,6 +30,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingRequestDto create(BookingCreateDto bookingCreateDto, Long userId) {
+
         if (bookingCreateDto.getStartDate().equals(bookingCreateDto.getEndDate())) {
             throw new ValidationException("The start date of the booking is the same as the end date of the booking");
         }

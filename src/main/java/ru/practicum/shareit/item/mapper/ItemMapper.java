@@ -1,16 +1,58 @@
 package ru.practicum.shareit.item.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class ItemMapper {
-    public  ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
+    public static Item toItem(ItemCreateDto itemCreateDto, User owner) {
+        return new Item(
+                itemCreateDto.getId(),
+                owner,
+                itemCreateDto.getName(),
+                itemCreateDto.getDescription(),
+                itemCreateDto.getAvailable()
+        );
     }
 
-    public Item toItem(ItemDto itemDto, Long itemId, Long userId) {
-        return new Item(itemId, userId, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable());
+    public static ItemRequestDto toDto(Item item) {
+        return new ItemRequestDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable()
+        );
+    }
+
+    public static ItemRequestWithCommentsDto toItemWithCommentsDto(Item item, List<CommentRequestDto> comments) {
+
+        return new ItemRequestWithCommentsDto(
+                comments,
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable()
+        );
+    }
+
+    public static ItemRequestWithBookingDateDto toItemWithBookingDateDto(Item item,
+                                                                         List<CommentRequestDto> comments,
+                                                                         LocalDateTime lastBookingDate,
+                                                                         LocalDateTime futureBookingDate) {
+
+        return new ItemRequestWithBookingDateDto(
+                comments,
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                lastBookingDate,
+                futureBookingDate
+        );
     }
 }

@@ -1,22 +1,31 @@
 package ru.practicum.shareit.item.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.model.User;
 
+@Entity
+@Table(name = "items")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long ownerId;
 
-    @NotBlank(message = "Item name can not be blank")
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Column
     private String name;
 
-    @NotBlank(message = "Description can not be blank")
+    @Column
     private String description;
 
-    @NotNull(message = "Available can not be null")
+    @Column
     private Boolean available;
 }

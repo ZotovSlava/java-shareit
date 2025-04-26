@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -365,5 +366,94 @@ class BookingServiceTest {
         when(itemRepository.findAllByOwnerId(userId)).thenReturn(Collections.emptyList());
 
         assertThrows(NotFoundException.class, () -> bookingService.getAllByOwner(userId, BookingState.ALL));
+    }
+
+    @Test
+    void getAllByOwner_whenItemsButNoBookings_thenReturnEmpty() {
+        Long ownerId = 5L;
+        User owner = new User(ownerId, "Carol", "carol@example.com");
+        Item item = new Item(50L, owner, null, "X", "x", true);
+
+        when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
+        when(itemRepository.findAllByOwnerId(ownerId)).thenReturn(List.of(item));
+        when(bookingRepository.findAllByItemId(item.getId())).thenReturn(Collections.emptyList());
+
+        var result = bookingService.getAllByOwner(ownerId, BookingState.ALL);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getAllByOwner_whenVariousStates_thenFilterAndSort() {
+        Long ownerId = 10L;
+        User owner = new User(ownerId, "Bob", "bob@example.com");
+
+        Item item1 = new Item(100L, owner, null, "A", "a", true);
+        Item item2 = new Item(200L, owner, null, "B", "b", true);
+
+        Booking past = new Booking(1L, new User(2L,"u","u@ex"), item1,
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1),
+                BookingStatus.APPROVED);
+        Booking future = new Booking(2L, new User(3L,"v","v@ex"), item2,
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2),
+                BookingStatus.APPROVED);
+
+        when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
+        when(itemRepository.findAllByOwnerId(ownerId)).thenReturn(List.of(item1, item2));
+        when(bookingRepository.findAllByItemId(item1.getId())).thenReturn(List.of(past));
+        when(bookingRepository.findAllByItemId(item2.getId())).thenReturn(List.of(future));
+
+        var all = bookingService.getAllByOwner(ownerId, BookingState.ALL);
+        assertEquals(2, all.size());
+        assertEquals(future.getId(), all.get(0).getId());
+        assertEquals(past.getId(),    all.get(1).getId());
+
+        var fut = bookingService.getAllByOwner(ownerId, BookingState.FUTURE);
+        assertEquals(1, fut.size());
+        assertEquals(future.getId(), fut.get(0).getId());
+
+        var pst = bookingService.getAllByOwner(ownerId, BookingState.PAST);
+        assertEquals(1, pst.size());
+        assertEquals(past.getId(), pst.get(0).getId());
+    }
+
+    @Test
+    void getAllByBooker_whenMultipleStates_thenFilterCorrectly() {
+        Long userId = 1L;
+        User booker = new User(userId, "Alice", "alice@example.com");
+        Item item = new Item(2L, booker, null, "Item", "Desc", true);
+
+        Booking past = new Booking(1L, booker, item,
+                LocalDateTime.now().minusDays(2),
+                LocalDateTime.now().minusDays(1),
+                BookingStatus.APPROVED);
+        Booking current = new Booking(2L, booker, item,
+                LocalDateTime.now().minusHours(1),
+                LocalDateTime.now().plusHours(1),
+                BookingStatus.APPROVED);
+        Booking future = new Booking(3L, booker, item,
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2),
+                BookingStatus.APPROVED);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
+        when(bookingRepository.findAllByBookerId(userId))
+                .thenReturn(List.of(past, current, future));
+
+        var all = bookingService.getAllByBooker(userId, BookingState.ALL);
+        assertEquals(3, all.size());
+
+        var fut = bookingService.getAllByBooker(userId, BookingState.FUTURE);
+        assertEquals(1, fut.size());
+        assertEquals(future.getId(), fut.get(0).getId());
+
+        var cur = bookingService.getAllByBooker(userId, BookingState.CURRENT);
+        assertEquals(1, cur.size());
+        assertEquals(current.getId(), cur.get(0).getId());
+
+        var pastList = bookingService.getAllByBooker(userId, BookingState.PAST);
+        assertEquals(1, pastList.size());
+        assertEquals(past.getId(), pastList.get(0).getId());
     }
 }

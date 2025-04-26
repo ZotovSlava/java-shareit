@@ -14,6 +14,7 @@ import ru.practicum.shareit.request.dto.CreateRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestWithAnswersDto;
 import ru.practicum.shareit.request.service.RequestService;
+import ru.practicum.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -46,17 +47,22 @@ class RequestControllerTest {
 
     @BeforeEach
     void setup() {
+        User requester = new User(1L, "Grey", "grey@example.com");
+
         createRequestDto = new CreateRequestDto(
-                null, 1L, "Request description", LocalDateTime.now()
+                null, requester.getId(), "Request description", LocalDateTime.now()
         );
 
         responseDto = new RequestDto(
-                1L, 1L, "Request description", LocalDateTime.now()
+                1L, requester, "Request description", LocalDateTime.now()
         );
 
         responseWithAnswersDto = new RequestWithAnswersDto(
                 List.of(new AnswersDto(1L, 1L, "Item name")),
-                1L, 1L, "Request description", LocalDateTime.now()
+                1L,
+                requester,
+                "Request description",
+                LocalDateTime.now()
         );
     }
 

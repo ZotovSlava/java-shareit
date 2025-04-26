@@ -46,12 +46,12 @@ public class RequestServiceIT {
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isNotNull();
-        assertThat(result.getRequesterId()).isEqualTo(savedUser.getId());
+        assertThat(result.getRequester().getId()).isEqualTo(savedUser.getId());
         assertThat(result.getDescription()).isEqualTo("Need a drill");
         assertThat(result.getCreationDate()).isNotNull();
 
         var persisted = requestRepository.findById(result.getId()).orElseThrow();
-        assertThat(persisted.getRequesterId()).isEqualTo(savedUser.getId());
+        assertThat(persisted.getRequester().getId()).isEqualTo(savedUser.getId());
         assertThat(persisted.getDescription()).isEqualTo("Need a drill");
     }
 

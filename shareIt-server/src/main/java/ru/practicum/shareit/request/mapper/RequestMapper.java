@@ -6,13 +6,14 @@ import ru.practicum.shareit.request.dto.CreateRequestDto;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestWithAnswersDto;
 import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
 @Component
 public class RequestMapper {
 
-    public static Request toEntity(CreateRequestDto createRequestDto, Long requesterId) {
+    public static Request toEntity(CreateRequestDto createRequestDto, User requesterId) {
         return new Request(
                 createRequestDto.getId(),
                 requesterId,
@@ -24,7 +25,7 @@ public class RequestMapper {
     public static RequestDto toDto(Request request) {
         return new RequestDto(
                 request.getId(),
-                request.getRequesterId(),
+                request.getRequester(),
                 request.getDescription(),
                 request.getCreationDate()
         );
@@ -34,7 +35,7 @@ public class RequestMapper {
         return new RequestWithAnswersDto(
                 answers,
                 request.getId(),
-                request.getRequesterId(),
+                request.getRequester(),
                 request.getDescription(),
                 request.getCreationDate()
         );

@@ -36,7 +36,7 @@ public class RequestServiceImpl implements RequestService {
         createRequestDto.setCreationDate(LocalDateTime.now());
 
         return RequestMapper.toDto(
-                requestRepository.save(RequestMapper.toEntity(createRequestDto, requesterId))
+                requestRepository.save(RequestMapper.toEntity(createRequestDto, user))
         );
     }
 
@@ -69,7 +69,7 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestDto> getAll(Long requesterId) {
         return requestRepository.findAll()
                 .stream()
-                .filter(request -> !request.getRequesterId().equals(requesterId))
+                .filter(request -> !request.getRequester().getId().equals(requesterId))
                 .map(RequestMapper::toDto)
                 .toList();
     }

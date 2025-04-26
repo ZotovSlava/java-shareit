@@ -18,7 +18,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -116,19 +116,14 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("The user does not have the items");
         }
 
-        return items.stream()
-                .map(item -> bookingRepository.findById(item.getOwner().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(BookingMapper::toRequestDto)
-                .filter(bookingRequestDto -> {
-                    if (state == BookingState.ALL) {
-                        return true;
-                    }
+        List<Booking> bookings = items.stream()
+                .flatMap(item -> bookingRepository.findAllByItemId(item.getId()).stream())
+                .collect(Collectors.toList());
 
-                    return bookingRequestDto.getState() == state;
-                })
+        return bookings.stream()
+                .map(BookingMapper::toRequestDto)
+                .filter(bookingRequestDto -> state == BookingState.ALL || bookingRequestDto.getState() == state)
                 .sorted(Comparator.comparing(BookingRequestDto::getStartDate).reversed())
-                .toList();
+                .collect(Collectors.toList());
     }
 }

@@ -38,6 +38,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
+
         Request request = null;
 
         if (itemCreateDto.getRequestId() != null) {
@@ -121,9 +122,7 @@ public class ItemServiceImpl implements ItemService {
                 }
             }
 
-            if (bookingRequestDto.getState().equals(BookingState.PAST)
-                    || bookingRequestDto.getState().equals(BookingState.CURRENT)) {
-
+            if (bookingRequestDto.getState().equals(BookingState.CURRENT)) {
                 if (lastBookingDate == null || lastBookingDate.isAfter(bookingRequestDto.getEndDate())) {
                     lastBookingDate = bookingRequestDto.getEndDate();
                 }

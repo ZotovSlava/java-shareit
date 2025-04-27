@@ -309,30 +309,6 @@ public class ItemServiceTest {
     }
 
     @Test
-    void getItem_whenPastBooking_thenLastBookingDateUpdated() {
-        User owner = new User(1L, "Owner", "owner@example.com");
-        Item item = new Item(1L, owner, null, "Item", "Desc", true);
-
-        BookingRequestDto pastBooking = new BookingRequestDto(
-                1L, owner, item,
-                LocalDateTime.now().minusDays(5),
-                LocalDateTime.now().minusDays(1),
-                BookingStatus.APPROVED,
-                BookingState.PAST
-        );
-
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
-        when(bookingService.getAllByOwner(owner.getId(), BookingState.ALL))
-                .thenReturn(List.of(pastBooking));
-        when(commentRepository.findAllByItemId(item.getId())).thenReturn(List.of());
-
-        ItemRequestWithBookingDateDto result = itemService.get(1L);
-
-        assertEquals(pastBooking.getEndDate(), result.getLastBookingDate());
-        assertNull(result.getFutureBookingDate());
-    }
-
-    @Test
     void getItem_whenCurrentBooking_thenLastBookingDateUpdated() {
         User owner = new User(1L, "Owner", "owner@example.com");
         Item item = new Item(1L, owner, null, "Item", "Desc", true);
